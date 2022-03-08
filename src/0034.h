@@ -31,7 +31,7 @@ public:
         int l = find(nums, target, true);
         int r = find(nums, target, false);
 
-        if (l >= nums.size() or r>= nums.size() or nums[l] != target) {
+        if (l >= nums.size() or r >= nums.size() or nums[l] != target) {
             return {-1, -1};
         } else {
             return {l, r};
