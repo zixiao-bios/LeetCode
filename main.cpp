@@ -1,10 +1,8 @@
 #include <iostream>
-
-#include "0007.h"
+#include "0015.h"
 
 using namespace std;
 
 int main() {
-    Solution s = Solution();
     return 0;
 }
