@@ -2,9 +2,10 @@
 #define LEETCODE_LISTNODE_H
 
 struct ListNode {
-    int val;
+    int val{};
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
+    explicit ListNode(int x) : val(x), next(nullptr) {}
+    ListNode() : next(nullptr) {}
 };
 
 #endif //LEETCODE_LISTNODE_H

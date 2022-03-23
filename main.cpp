@@ -1,5 +1,5 @@
 #include <iostream>
-#include "0022.h"
+#include "0042_2.h"
 
 using namespace std;
 
