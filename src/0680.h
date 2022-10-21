@@ -5,7 +5,7 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkSubString(const string &s, int start, int end) {
+    bool check(const string &s, int start, int end) {
         while (start < end) {
             if (s[start++] != s[end--]) {
                 return false;
@@ -15,14 +15,15 @@ public:
     }
 
     bool validPalindrome(string s) {
-        int l = 0, r = s.size() - 1;
+        int left = 0, right = s.size() - 1;
 
-        while (l < r) {
-            if (s[l] != s[r]) {
-                return checkSubString(s, l + 1, r) or checkSubString(s, l, r - 1);
+        while (left < right) {
+            if (s[left] != s[right]) {
+                return check(s, left + 1, right) or check(s, left, right - 1);
             }
-            ++l, --r;
+            ++left, --right;
         }
+
         return true;
     }
 };

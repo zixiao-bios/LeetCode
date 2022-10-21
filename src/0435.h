@@ -9,20 +9,17 @@ using namespace std;
 class Solution {
 public:
     int eraseOverlapIntervals(vector<vector<int>> &intervals) {
-        if (intervals.size() < 2) {
-            return 0;
-        }
-
-        sort(intervals.begin(), intervals.end(), [](vector<int> &a, vector<int> &b) { return a[1] < b[1]; });
+        sort(intervals.begin(), intervals.end(),
+             [](const vector<int> &a, const vector<int> &b) { return a[1] < b[1]; });
 
         int ans = 0;
-        int lastEnd = intervals[0][1];
+        int last_end = intervals[0][1];
 
         for (int i = 1; i < intervals.size(); ++i) {
-            if (intervals[i][0] < lastEnd) {
-                ++ans;
+            if (intervals[i][0] >= last_end) {
+                last_end = intervals[i][1];
             } else {
-                lastEnd = intervals[i][1];
+                ++ans;
             }
         }
 

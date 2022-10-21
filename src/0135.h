@@ -11,11 +11,6 @@ class Solution {
 public:
     int candy(vector<int>& ratings) {
         int n = ratings.size();
-
-        if (n < 2) {
-            return n;
-        }
-
         vector<int> candy(n, 1);
 
         for (int i = 1; i < n; ++i) {

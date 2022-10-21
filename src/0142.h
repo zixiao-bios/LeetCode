@@ -1,32 +1,30 @@
 #ifndef LEETCODE_0142_H
 #define LEETCODE_0142_H
 
+#include "list_node.h"
+
 class Solution {
 public:
-    struct ListNode {
-        int val;
-        ListNode *next;
-
-        ListNode(int x) : val(x), next(NULL) {}
-    };
-
-
     ListNode *detectCycle(ListNode *head) {
-        ListNode *slow = head, *fast = head;
+        ListNode *fast = head, *slow = head;
 
-        do {
+        while (true) {
             if (fast == nullptr or fast->next == nullptr) {
                 return nullptr;
             }
-            slow = slow->next;
+
             fast = fast->next->next;
-        } while (fast != slow);
+            slow = slow->next;
+
+            if (fast == slow) {
+                break;
+            }
+        }
 
         fast = head;
-
-        while (slow != fast) {
-            slow = slow->next;
+        while (fast != slow) {
             fast = fast->next;
+            slow = slow->next;
         }
 
         return fast;

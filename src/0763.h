@@ -2,32 +2,31 @@
 #define LEETCODE_0763_H
 
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
 class Solution {
 public:
     vector<int> partitionLabels(string s) {
-        vector<int> lastPos(26);
+        unordered_map<char, int> last_idx;
 
         for (int i = 0; i < s.size(); ++i) {
-            lastPos[s[i] - 'a'] = i;
+            last_idx[s[i]] = i;
         }
 
-        vector<int> ans;
-        int start = 0, end = 0;
-
+        vector<int> len_list;
+        int start = 0, end = -1;
         for (int i = 0; i < s.size(); ++i) {
-            end = max(end, lastPos[s[i] - 'a']);
-
+            end = max(end, last_idx[s[i]]);
             if (i == end) {
-                ans.push_back(end - start + 1);
-                start = end + 1;
-                end = end + 1;
+                // 当前片段结束
+                len_list.push_back(end - start + 1);
+                start = i + 1;
             }
         }
 
-        return ans;
+        return len_list;
     }
 };
 

@@ -7,55 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    unordered_map<char, int> origin, count;
-
-    string minWindow(string s, string t) {
-
-        for (auto &ch: t) {
-            ++origin[ch];
-        }
-
-        int r = 0, l = 0, len = INT_MAX, ansL = -1;
-
-        while (r < s.size()) {
-            // 统计窗口中包括的字符
-            if (origin[s[r]] > 0) {
-                ++count[s[r]];
-            }
-
-            // 尝试缩小窗口
-            while (l <= r and check()) {
-                if (r - l + 1 < len) {
-                    // 找到了更小的答案，记录下来
-                    len = r - l + 1;
-                    ansL = l;
-                }
-
-                // 缩小窗口（右移l）
-                if (origin[s[l]] > 0) {
-                    --count[s[l]];
-                }
-                ++l;
-            }
-
-            // 扩大窗口
-            ++r;
-        }
-
-        if (ansL == -1) {
-            return "";
-        } else {
-            return s.substr(ansL, len);
-        }
-    }
+    unordered_map<char, int> target, source;
 
     bool check() {
-        for (const auto &c: origin) {
-            if (count[c.first] < c.second) {
+        for (auto &each: target) {
+            if (source[each.first] < each.second) {
                 return false;
             }
         }
         return true;
+    }
+
+    string minWindow(string s, string t) {
+        for (auto &ch: t) {
+            ++target[ch];
+        }
+
+        int min_len = INT_MAX, left = 0, min_left = -1;
+        for (int right = 0; right < s.size(); ++right) {
+            ++source[s[right]];
+
+            while (check()) {
+                int len = right - left + 1;
+                if (len < min_len) {
+                    min_len = len;
+                    min_left = left;
+                }
+                --source[s[left]];
+                ++left;
+            }
+        }
+
+        return min_left == -1 ? "" : s.substr(min_left, min_len);
     }
 };
 
