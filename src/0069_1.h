@@ -3,24 +3,24 @@
 
 /// 二分法
 
+using namespace std;
+
 class Solution {
 public:
-    int mySqrt(int x) {
-        int ans, mid;
-        int start = 0;
-        int end = x;
+    int find(int start, int end, int target) {
+        uint64_t mid = (start + end) / 2;
 
-        while (start <= end) {
-            mid = start + ((end - start) >> 1);
-            if ((long long) mid * mid <= x) {
-                ans = mid;
-                start = mid + 1;
-            } else {
-                end = mid - 1;
-            }
+        if (mid * mid <= target and (mid + 1) * (mid + 1) > target) {
+            return mid;
+        } else if (mid * mid > target) {
+            return find(start, mid - 1, target);
+        } else {
+            return find(mid + 1, end, target);
         }
+    }
 
-        return ans;
+    int mySqrt(int x) {
+        return find(0, x, x);
     }
 };
 
