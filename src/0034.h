@@ -7,35 +7,37 @@ using namespace std;
 
 class Solution {
 public:
-    int find(vector<int> &nums, int target, bool lower) {
-        int l = 0, r = nums.size() - 1, mid;
-
-        while (l <= r) {
-            mid = l + ((r - l) >> 2);
-
-            if (nums[mid] > target or (lower and nums[mid] == target)) {
-                r = mid - 1;
-            } else {
-                l = mid + 1;
-            }
+    int find(const vector<int> &nums, int target, int start, int end, char direction) {
+        if (start > end) {
+            return -1;
         }
 
-        return lower ? r + 1 : r;
+        int mid = (start + end) / 2;
+
+        switch (direction) {
+            case 'r':
+                if (nums[mid] == target and (mid == nums.size() - 1 or nums[mid + 1] != target)) {
+                    return mid;
+                } else if (nums[mid] <= target) {
+                    return find(nums, target, mid + 1, end, direction);
+                } else {
+                    return find(nums, target, start, mid - 1, direction);
+                }
+            case 'l':
+                if (nums[mid] == target and (mid == 0 or nums[mid - 1] != target)) {
+                    return mid;
+                } else if (nums[mid] < target) {
+                    return find(nums, target, mid + 1, end, direction);
+                } else {
+                    return find(nums, target, start, mid - 1, direction);
+                }
+            default:
+                return -1;
+        }
     }
 
-    vector<int> searchRange(vector<int> &nums, int target) {
-        if (nums.size() == 0) {
-            return {-1, -1};
-        }
-
-        int l = find(nums, target, true);
-        int r = find(nums, target, false);
-
-        if (l >= nums.size() or r >= nums.size() or nums[l] != target) {
-            return {-1, -1};
-        } else {
-            return {l, r};
-        }
+    vector<int> searchRange(vector<int>& nums, int target) {
+        return {find(nums, target, 0, nums.size() - 1, 'l'), find(nums, target, 0, nums.size() - 1, 'r')};
     }
 };
 
