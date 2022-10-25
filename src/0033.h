@@ -7,34 +7,36 @@ using namespace std;
 
 class Solution {
 public:
-    int search(vector<int>& nums, int target) {
-        int l = 0, r = nums.size() - 1, mid;
-
-        while (l <= r) {
-            mid = l + ((r - l) >> 1);
-
-            if (nums[mid] == target) {
-                return mid;
-            }
-
-            if (nums[mid] >= nums[l]) {
-                // 左侧是递增
-                if (nums[mid] > target and nums[l] <= target) {
-                    r = mid - 1;
-                } else {
-                    l = mid + 1;
-                }
-            } else {
-                // 右侧是递增
-                if (nums[mid] < target and nums[r] >= target) {
-                    l = mid + 1;
-                } else {
-                    r = mid - 1;
-                }
-            }
+    int find(const vector<int>& nums, int target, int start, int end) {
+        if (start > end) {
+            return -1;
         }
 
-        return -1;
+        int mid = (start + end) / 2;
+
+        if (nums[mid] == target) {
+            return mid;
+        }
+
+        if (nums[start] <= nums[mid]) {
+            // 左侧为单调区间
+            if (target >= nums[start] and target < nums[mid]) {
+                return find(nums, target, start, mid - 1);
+            } else {
+                return find(nums, target, mid + 1, end);
+            }
+        } else {
+            // 右侧为单调区间
+            if (target > nums[mid] and target <= nums[end]) {
+                return find(nums, target, mid + 1, end);
+            } else {
+                return find(nums, target, start, mid - 1);
+            }
+        }
+    }
+
+    int search(vector<int>& nums, int target) {
+        return find(nums, target, 0, nums.size() - 1);
     }
 };
 
