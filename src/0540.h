@@ -7,36 +7,46 @@ using namespace std;
 
 class Solution {
 public:
+    int relative_x(const vector<int>& nums, int i) {
+        if (i == 0) {
+            return nums[i] == nums[i + 1] ? -1 : 0;
+        }
+
+        if (i == nums.size() - 1) {
+            return nums[i] == nums[i - 1] ? 1 : 0;
+        }
+
+        if (nums[i] != nums[i - 1] and nums[i] != nums[i + 1]) {
+            return 0;
+        } else if (nums[i] == nums[i - 1]) {
+            return i % 2 == 0 ? 1 : -1;
+        } else {
+            return i % 2 == 0 ? -1 : 1;
+        }
+    }
+
     int singleNonDuplicate(vector<int>& nums) {
         if (nums.size() == 1) {
             return nums[0];
         }
 
-        if (nums[nums.size() - 2] != nums[nums.size() - 1]) {
-            return nums[nums.size() - 1];
-        }
-
-        int l = 0, r = nums.size() - 3, mid, ans;
+        int l = 0, r = nums.size() - 1;
 
         while (l <= r) {
-            mid = l + ((r - l) >> 1);
+            int mid = (l + r) / 2;
 
-            // 把mid变为偶数
-            if (mid % 2 != 0) {
-                --mid;
-            }
-
-            if (nums[mid] == nums[mid + 1]) {
-                // 答案在右侧
-                l = mid + 2;
-            } else {
-                // 答案在当前，或者左侧
-                ans = mid;
-                r = mid - 2;
+            switch (relative_x(nums, mid)) {
+                case 0:
+                    return nums[mid];
+                case -1:
+                    l = mid + 1;
+                    break;
+                case 1:
+                    r = mid - 1;
             }
         }
 
-        return nums[ans];
+        return 666;
     }
 };
 
