@@ -7,40 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    bool search(vector<int>& nums, int target) {
-        if (nums.size() == 0) {
+    bool find(const vector<int> &nums, int target, int start, int end) {
+        if (start > end) {
             return false;
         }
 
-        int l = 0, r = nums.size() - 1, mid;
+        int mid = (start + end) / 2;
 
-        while (l <= r) {
-            mid = l + ((r - l) >> 1);
-
-            if (nums[mid] == target) {
-                return true;
-            }
-
-            if (nums[mid] == nums[l] and nums[mid] == nums[r]) {
-                ++l, --r;
-            } else if (nums[mid] >= nums[l]) {
-                // 左侧是递增的
-                if (nums[mid] > target and nums[l] <= target) {
-                    r = mid - 1;
-                } else {
-                    l = mid + 1;
-                }
-            } else {
-                // 右侧是递增的
-                if (nums[mid] < target and nums[r] >= target) {
-                    l = mid + 1;
-                } else {
-                    r = mid - 1;
-                }
-            }
+        if (nums[mid] == target) {
+            return true;
         }
 
-        return false;
+        if (nums[start] == nums[mid]) {
+            // 无法判断单调区间
+            return find(nums, target, ++start, end);
+        } else if (nums[start] < nums[mid]) {
+            // 左侧为单调区间
+            if (target >= nums[start] and target < nums[mid]) {
+                return find(nums, target, start, mid - 1);
+            } else {
+                return find(nums, target, mid + 1, end);
+            }
+        } else {
+            // 右侧为单调区间
+            if (target > nums[mid] and target <= nums[end]) {
+                return find(nums, target, mid + 1, end);
+            } else {
+                return find(nums, target, start, mid - 1);
+            }
+        }
+    }
+
+    bool search(vector<int>& nums, int target) {
+        return find(nums, target, 0, nums.size() - 1);
     }
 };
 
