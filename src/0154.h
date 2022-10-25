@@ -2,35 +2,36 @@
 #define LEETCODE_0154_H
 
 #include <vector>
-#include <algorithm>
-#include <cmath>
 
 using namespace std;
 
 class Solution {
 public:
-    int findMin(vector<int>& nums) {
-        int l = 0, r = nums.size() - 1, mid, min = INT_MAX;
-
-        while (l <= r) {
-            mid = l + ((r - l) >> 1);
-
-            if (nums[mid] == nums[l] and nums[mid] == nums[r]) {
-                // 无法判断递增情况
-                min = std::min(min, nums[mid]);
-                ++l, --r;
-            } else if (nums[mid] >= nums[l]) {
-                // 左边是递增的
-                min = std::min(min, nums[l]);
-                l = mid + 1;
-            } else {
-                // 右边是递增的
-                min = std::min(min, nums[mid]);
-                r = mid - 1;
-            }
+    int find(const vector<int> &nums, int start, int end) {
+        if (start == end) {
+            return nums[start];
         }
 
-        return min;
+        if (end - start == 1) {
+            return min(nums[start], nums[end]);
+        }
+
+        int mid = (start + end) / 2;
+
+        if (nums[start] == nums[mid]) {
+            // 无法判断
+            return min(nums[start], find(nums, start + 1, end));
+        } else if (nums[start] < nums[mid]) {
+            // 左侧为单增
+            return min(nums[start], find(nums, mid + 1, end));
+        } else {
+            // 右侧为单增
+            return min(nums[mid], find(nums, start, mid - 1));
+        }
+    }
+
+    int findMin(vector<int>& nums) {
+        return find(nums, 0, nums.size() - 1);
     }
 };
 
