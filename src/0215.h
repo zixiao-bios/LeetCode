@@ -2,34 +2,19 @@
 #define LEETCODE_0215_H
 
 #include <vector>
-#include <random>
 
 using namespace std;
 
 class Solution {
 public:
-    int findKthLargest(vector<int> &nums, int k) {
-        int l = 0, r = nums.size() - 1, index;
-
-        while (l <= r) {
-            index = quickSelection(nums, l, r);
-
-            if (index + 1 == k) {
-                return nums[index];
-            } else if (index + 1 > k) {
-                r = index - 1;
-            } else {
-                l = index + 1;
-            }
-        }
-
-        return -1;
-    }
-
-    int quickSelection(vector<int> &nums, int start, int end) {
-        swap(nums[start], nums[(rand() % (end - start + 1)) + start]);
-
-        int l = start, r = end, key = nums[start];
+    /// 在索引为 [start, end] 的区间中，返回一个元素的索引，且将数组修改为：该数左/右侧元素均小/大于该元素
+    /// \param nums
+    /// \param start
+    /// \param end
+    /// \return
+    int select(vector<int> &nums, int start, int end) {
+        int key = nums[start];
+        int l = start, r = end;
 
         while (l < r) {
             while (l < r and nums[r] <= key) {
@@ -43,8 +28,26 @@ public:
             nums[r] = nums[l];
         }
 
-        nums[r] = key;
-        return r;
+        nums[l] = key;
+        return l;
+    }
+
+    int findKthLargest(vector<int> &nums, int k) {
+        --k;
+        int start = 0, end = nums.size() - 1;
+        while (true) {
+            int i = select(nums, start, end);
+
+            if (i == k) {
+                return nums[i];
+            }
+
+            if (i < k) {
+                start = i + 1;
+            } else {
+                end = i - 1;
+            }
+        }
     }
 };
 
