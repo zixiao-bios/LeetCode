@@ -8,56 +8,59 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> topKFrequent(vector<int> &nums, int k) {
-        unordered_map<int, int> countMap;
-
-        for (auto &num: nums) {
-            ++countMap[num];
-        }
-
-        vector<pair<int, int>> count(countMap.size());
-        for (auto &each: countMap) {
-            count.emplace_back(each);
-        }
-
-        int l = 0, r = count.size() - 1, index;
-        while (l <= r) {
-            index = quickSelection(count, l, r);
-
-            if (index + 1 == k) {
-                vector<int> ans(k);
-                for (int i = 0; i < k; ++i) {
-                    ans[i] = count[i].first;
-                }
-                return ans;
-            } else if (index + 1 > k) {
-                r = index - 1;
-            } else {
-                l = index + 1;
-            }
-        }
-
-        return {};
-    }
-
-    int quickSelection(vector<pair<int, int>> &count, int start, int end) {
+    int quickSelection(vector<pair<int, int>> &times, int start, int end) {
+        auto key = times[start];
         int l = start, r = end;
-        pair<int, int> key = count[l];
 
         while (l < r) {
-            while (l < r and count[r].second <= key.second) {
+            while (l < r and times[r].second <= key.second) {
                 --r;
             }
-            count[l] = count[r];
+            times[l] = times[r];
 
-            while (l < r and count[l].second >= key.second) {
+            while (l < r and times[l].second >= key.second) {
                 ++l;
             }
-            count[r] = count[l];
+            times[r] = times[l];
         }
 
-        count[r] = key;
-        return r;
+        times[l] = key;
+        return l;
+    }
+
+    vector<int> topKFrequent(vector<int> &nums, int k) {
+        unordered_map<int, int> count;
+
+        for (auto &each: nums) {
+            ++count[each];
+        }
+
+        vector<pair<int, int>> times(count.size());
+        for (auto &each: count) {
+            times.emplace_back(each);
+        }
+
+        int start = 0, end = times.size() - 1;
+        while (true) {
+            int i = quickSelection(times, start, end);
+
+            if (i + 1 == k) {
+                break;
+            }
+
+            if (i + 1 < k) {
+                start = i + 1;
+            } else {
+                end = i - 1;
+            }
+        }
+
+        vector<int> ans(k);
+        for (int i = 0; i < k; ++i) {
+            ans[i] = times[i].first;
+        }
+
+        return ans;
     }
 };
 
