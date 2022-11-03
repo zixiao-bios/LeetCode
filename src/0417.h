@@ -7,27 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> direction = {{0,  -1},
-                                     {0,  1},
-                                     {-1, 0},
-                                     {1,  0}};
+    vector<pair<int, int>> direction = {{1,  0},
+                                        {-1, 0},
+                                        {0,  1},
+                                        {0,  -1}};
 
     int m, n;
 
+    bool outOfBounds(int i, int j) {
+        return i < 0 or i >= m or j < 0 or j >= n;
+    }
+
     vector<vector<int>> pacificAtlantic(vector<vector<int>> &heights) {
-        m = heights.size(), n = heights[0].size();
+        m = heights.size();
+        n = heights[0].size();
 
         vector<vector<bool>> reachA(m, vector<bool>(n, false));
-        vector<vector<bool>> reachB(m, vector<bool>(n, false));
-
         for (int i = 0; i < m; ++i) {
             dfs(heights, reachA, i, 0);
-            dfs(heights, reachB, i, n - 1);
+        }
+        for (int j = 0; j < n; ++j) {
+            dfs(heights, reachA, 0, j);
         }
 
-        for (int i = 0; i < n; ++i) {
-            dfs(heights, reachA, 0, i);
-            dfs(heights, reachB, m - 1, i);
+        vector<vector<bool>> reachB(m, vector<bool>(n, false));
+        for (int i = 0; i < m; ++i) {
+            dfs(heights, reachB, i, n - 1);
+        }
+        for (int j = 0; j < n; ++j) {
+            dfs(heights, reachB, m - 1, j);
         }
 
         vector<vector<int>> ans;
@@ -42,14 +50,16 @@ public:
         return ans;
     }
 
-    void dfs(vector<vector<int>> &heights, vector<vector<bool>> &reach, int i, int j) {
+    void dfs(const vector<vector<int>> &heights, vector<vector<bool>> &reach, int i, int j) {
+        if (reach[i][j]) {
+            return;
+        }
         reach[i][j] = true;
 
-        int x, y;
         for (auto &each: direction) {
-            x = i + each[0], y = j + each[1];
-            if (x >= 0 and x < m and y >= 0 and y < n and heights[x][y] >= heights[i][j] and !reach[x][y]) {
-                dfs(heights, reach, x, y);
+            int ii = i + each.first, jj = j + each.second;
+            if (!outOfBounds(ii, jj) and heights[ii][jj] >= heights[i][j]) {
+                dfs(heights, reach, ii, jj);
             }
         }
     }
