@@ -14,7 +14,7 @@ public:
     }
 
     void backtracking(vector<int> &nums, vector<vector<int>> &ans, int level) {
-        if (level == nums.size()) {
+        if (level == nums.size() - 1) {
             ans.push_back(nums);
             return;
         }
