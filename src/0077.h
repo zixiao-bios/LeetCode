@@ -8,21 +8,23 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int>> combine(int n, int k) {
+        vector<int> output(k, 0);
         vector<vector<int>> ans;
-        vector<int> num(k);
-        backtracking(n, k, 1, 0, num, ans);
+
+        backtracking(n, output, ans, 0, -1);
+
         return ans;
     }
 
-    void backtracking(int n, int k, int np, int kp, vector<int> &num, vector<vector<int>> &ans) {
-        if (kp == k) {
-            ans.push_back(num);
+    void backtracking(int n, vector<int> &output, vector<vector<int>> &ans, int level, int pre) {
+        if (level == output.size()) {
+            ans.push_back(output);
             return;
         }
 
-        for (int i = np; i <= n; ++i) {
-            num[kp] = i;
-            backtracking(n, k, i + 1, kp + 1, num, ans);
+        for (int i = pre + 1; i < n; ++i) {
+            output[level] = i + 1;
+            backtracking(n, output, ans, level + 1, i);
         }
     }
 };
