@@ -7,22 +7,19 @@ using namespace std;
 
 class Solution {
 public:
+    vector<pair<int, int>> direction = {{1,  0},
+                                        {-1, 0},
+                                        {0,  1},
+                                        {0,  -1}};
     int m, n;
-    bool find = false;
-    vector<vector<bool>> visited;
-    vector<vector<int>> direction = {{0,  1},
-                                     {0,  -1},
-                                     {1,  0},
-                                     {-1, 0}};
 
     bool exist(vector<vector<char>> &board, string word) {
         m = board.size(), n = board[0].size();
-        visited = vector<vector<bool>>(m, vector<bool>(n, false));
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
 
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                backtracking(i, j, board, 0, word);
-                if (find) {
+                if (backtracking(board, visited, i, j, word, 0)) {
                     return true;
                 }
             }
@@ -31,27 +28,33 @@ public:
         return false;
     }
 
-    void backtracking(int i, int j, vector<vector<char>> &board, int pos, const string &word) {
-        if (pos == word.size()) {
-            find = true;
-            return;
+    bool outOfBounds(int i, int j) {
+        return i < 0 or i >= m or j < 0 or j >= n;
+    }
+
+    bool backtracking(const vector<vector<char>> &board,
+                      vector<vector<bool>> &visited,
+                      int i,
+                      int j,
+                      const string &word,
+                      int level) {
+        if (level == word.size()) {
+            return true;
         }
 
-        if (i < 0 or i >= m or j < 0 or j >= n) {
-            return;
-        }
-
-        if (visited[i][j] or board[i][j] != word[pos]) {
-            return;
+        if (outOfBounds(i, j) or visited[i][j] or board[i][j] != word[level]) {
+            return false;
         }
 
         visited[i][j] = true;
-
         for (auto &each: direction) {
-            backtracking(i + each[0], j + each[1], board, pos + 1, word);
+            if (backtracking(board, visited, i + each.first, j + each.second, word, level + 1)) {
+                return true;
+            }
         }
-
         visited[i][j] = false;
+
+        return false;
     }
 };
 
