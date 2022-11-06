@@ -28,18 +28,33 @@ public:
             return;
         }
 
-        for (int i = 0; i < n; ++i) {
-            if (column[i] or left[i + row] or right[i - row + n - 1]) {
+        for (int j = 0; j < n; ++j) {
+            if (column[j]) {
                 continue;
             }
 
-            column[i] = true, left[i + row] = true, right[i - row + n - 1] = true;
-            board[row][i] = 'Q';
+            int left_idx = row + j;
+            if (left[left_idx]) {
+                continue;
+            }
+
+            int right_idx = row - j + n - 1;
+            if (right[right_idx]) {
+                continue;
+            }
+
+            // find a place
+            column[j] = true;
+            left[left_idx] = true;
+            right[right_idx] = true;
+            board[row][j] = 'Q';
 
             backtracking(row + 1, n);
 
-            column[i] = false, left[i + row] = false, right[i - row + n - 1] = false;
-            board[row][i] = '.';
+            column[j] = false;
+            left[left_idx] = false;
+            right[right_idx] = false;
+            board[row][j] = '.';
         }
     }
 };
