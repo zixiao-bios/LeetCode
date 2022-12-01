@@ -1,22 +1,35 @@
 #ifndef LEETCODE_0070_H
 #define LEETCODE_0070_H
 
+/**
+ * dp[i]：爬到i阶的方法数
+ *
+ * dp[i] = dp[i-1] + dp[i-2]
+ *
+ * dp[1] = 1
+ * dp[2] = 2
+ */
+
+#include <vector>
+
+using namespace std;
+
 class Solution {
 public:
     int climbStairs(int n) {
-        int num[3] = {1, 2, -1};
-
-        if (n < 3) {
-            return num[n - 1];
+        if (n == 1) {
+            return 1;
         }
 
-        for (int i = 2; i < n; ++i) {
-            num[2] = num[0] + num[1];
-            num[0] = num[1];
-            num[1] = num[2];
+        vector<int> dp(n + 1);
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for (int i = 3; i < n + 1; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2];
         }
 
-        return num[2];
+        return dp[n];
     }
 };
 
