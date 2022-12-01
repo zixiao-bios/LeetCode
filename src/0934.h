@@ -13,77 +13,89 @@ public:
                                         {0,  1},
                                         {0,  -1}};
 
-    int m, n;
+    int n;
 
-    bool outOfBounds(int i, int j) {
-        return i < 0 or i >= m or j < 0 or j >= n;
+    bool out_range(int i, int j) {
+        return i < 0 or i >= n or j < 0 or j >= n;
     }
 
     int shortestBridge(vector<vector<int>> &grid) {
-        m = grid.size(), n = grid[0].size();
-        queue<pair<int, int>> points;
+        n = grid.size();
 
-        // find island a
+        // bfs to find island 1
+        queue<pair<int, int>> queue, island_1;
         bool find = false;
-        for (int i = 0; i < m; ++i) {
+
+        for (int i = 0; i < n; ++i) {
             if (find) {
                 break;
             }
 
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] != 1) {
-                    continue;
-                }
+                if (grid[i][j] == 1) {
+                    find = true;
 
-                find = true;
-                points.push({i, j});
+                    // bfs
+                    queue.push({i, j});
+                    island_1.push({i, j});
+                    grid[i][j] = 2;
 
-                queue<pair<int, int>> bfs;
-                bfs.push({i, j});
-                grid[i][j] = -1;
-                while (!bfs.empty()) {
-                    for (auto &each: direction) {
-                        int x = bfs.front().first + each.first;
-                        int y = bfs.front().second + each.second;
-                        if (outOfBounds(x, y)) {
-                            continue;
-                        }
+                    while (!queue.empty()) {
+                        int ii = queue.front().first;
+                        int jj = queue.front().second;
+                        queue.pop();
 
-                        if (grid[x][y] == 1) {
-                            grid[x][y] = -1;
-                            bfs.push({x, y});
-                            points.push({x, y});
+                        for (auto &each: direction) {
+                            int x = ii + each.first;
+                            int y = jj + each.second;
+
+                            if (out_range(x, y)) {
+                                continue;
+                            }
+
+                            if (grid[x][y] == 1) {
+                                grid[x][y] = 2;
+                                queue.push({x, y});
+                                island_1.push({x, y});
+                            }
                         }
                     }
-                    bfs.pop();
+
+                    break;
                 }
-                break;
             }
         }
 
-        // find island b
-        int length = 0;
+        // bfs island 1 to find island 2
+        int steps = 0;
+
         while (true) {
-            int num = points.size();
-            for (int i = 0; i < num; ++i) {
+            int num = island_1.size();
+            for (int a = 0; a < num; ++a) {
+                int i = island_1.front().first;
+                int j = island_1.front().second;
+                island_1.pop();
+
                 for (auto &each: direction) {
-                    int x = points.front().first + each.first;
-                    int y = points.front().second + each.second;
-                    if (outOfBounds(x, y)) {
+                    int x = i + each.first;
+                    int y = j + each.second;
+
+                    if (out_range(x, y)) {
                         continue;
                     }
 
                     switch (grid[x][y]) {
-                        case 1:
-                            return length;
                         case 0:
-                            grid[x][y] = -1;
-                            points.push({x, y});
+                            grid[x][y] = 2;
+                            island_1.push({x, y});
+                            break;
+                        case 1:
+                            // find island 2
+                            return steps;
                     }
                 }
-                points.pop();
             }
-            ++length;
+            ++steps;
         }
     }
 };
