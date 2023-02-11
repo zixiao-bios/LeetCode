@@ -2,43 +2,19 @@
 #define LEETCODE_2335_H
 
 #include <vector>
-#include <queue>
+#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
     int fillCups(vector<int> &amount) {
-        priority_queue<int> pq;
-        for (auto &each: amount) {
-            if (each != 0) {
-                pq.push(each);
-            }
+        sort(amount.begin(), amount.end());
+        if (amount[2] >= amount[0] + amount[1]) {
+            return amount[2];
+        } else {
+            return (amount[0] + amount[1] - amount[2] + 1) / 2 + amount[2];
         }
-
-        int ans = 0;
-        while (pq.size() > 1) {
-            int a = pq.top();
-            pq.pop();
-            int b = pq.top();
-            pq.pop();
-
-            --a, --b;
-            if (a > 0) {
-                pq.push(a);
-            }
-            if (b > 0) {
-                pq.push(b);
-            }
-
-            ++ans;
-        }
-
-        if (pq.size() == 1) {
-            ans += pq.top();
-        }
-
-        return ans;
     }
 };
 
