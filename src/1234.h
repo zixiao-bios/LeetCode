@@ -8,37 +8,46 @@ using namespace std;
 
 class Solution {
 public:
-    unordered_map<char, int> target_num;
-
-    bool balance(const unordered_map<char, int> &num) {
-        return all_of(target_num.begin(), target_num.end(), [&num](const pair<char, int> &each) {
-            try {
-                return num.at(each.first) == each.second;
-            } catch (const exception &e) {
-                return false;
-            }
+    static bool check(const unordered_map<char, int> &target) {
+        return all_of(target.begin(), target.end(), [](const pair<char, int> &a) {
+            return a.second <= 0;
         });
     }
 
     int balancedString(string s) {
-        unordered_map<char, int> total_num;
+        unordered_map<char, int> num;
         int correct_num = s.size() / 4;
-
         for (auto &ch: s) {
-            ++total_num[ch];
+            ++num[ch];
         }
 
         bool balance = true;
-        for (auto &each: total_num) {
+        for (auto &each: num) {
             if (each.second != correct_num) {
                 balance = false;
                 if (each.second > correct_num) {
-                    target_num[each.first] = each.second - correct_num;
+                    each.second -= correct_num;
+                } else {
+                    each.second = 0;
                 }
+            } else {
+                each.second = 0;
             }
         }
+        if (balance) {
+            return 0;
+        }
 
-
+        int ans = INT32_MAX;
+        for (int left = 0, right = 0; right < s.size(); ++right) {
+            --num[s[right]];
+            while (left <= right and check(num)) {
+                ans = min(ans, right - left + 1);
+                ++num[s[left]];
+                ++left;
+            }
+        }
+        return ans;
     }
 };
 
