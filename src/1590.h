@@ -13,7 +13,7 @@ public:
         vector<int> prefix_sum(n + 1, 0);
 
         for (int i = 1; i < n + 1; ++i) {
-            prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1];
+            prefix_sum[i] = (prefix_sum[i - 1] + nums[i - 1]) % p;
         }
 
         // 前缀和的两元素之差，与p求余后，要等于target
@@ -27,13 +27,13 @@ public:
 
         for (int i = 0; i < n + 1; ++i) {
             // (a-b) % p == target
-            // k * p + target == a - b
-            // a = k * p + target + b
-            // a % p == target + b
+            // k1 * p + target == a - b
+            // a == k1 * p + target + b == k1*p + (target+b)%p + k2*p == (k1+k2)*p + (target+b)%p
+            // a % p == (target + b) % p
             if (map.find(prefix_sum[i] % p) != map.end()) {
                 ans = min(ans, i - map[prefix_sum[i] % p]);
             }
-            map[i + target] = i;
+            map[(prefix_sum[i] + target) % p] = i;
         }
 
         return ans == n ? -1 : ans;
